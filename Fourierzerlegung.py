@@ -71,7 +71,7 @@ ax.legend()
 L = 1.
 n = 1
 m = 1
-x = np.linspace(-1.,1.,20001)
+x = np.linspace(-1.,1.,201)
 #plt.plot(x,cos(x,n,L))
 #plt.plot(x,cos(x,m,L))
 plt.plot(x,cos(x,n,L)*cos(x,m,L))
@@ -79,7 +79,7 @@ plt.plot(x,cos(x,n,L)*cos(x,m,L))
 
 L=1
 c = [np.trapz(cos(x,i,L)*f(x),dx=0.01) for i in np.arange(101)]
-#s = [np.trapz(sin(x,i,L)*f(x),dx=0.01) for i in np.arange(11)]
+s = [np.trapz(sin(x,i,L)*f(x),dx=0.01) for i in np.arange(11)]
 y_cos = np.array([c[i]*cos(x,i,L) for i in np.arange(101)])
 y_cos[0] = y_cos[0]/2
 
@@ -88,25 +88,56 @@ fig, (ax1,ax2,ax3) = plt.subplots(3,1)
 #
 #for i in np.arange(11):
 #    ax.plot(y_cos[i])
-ax1.plot(f(x))
-ax2.plot(np.sum(y_cos,axis=0))
+ax1.plot(x,f(x))
+ax2.plot(x,np.sum(y_cos,axis=0))
 ax3.plot(c)
 
-y_cos[0] = y_cos[0]/2.
 
-a = np.arange(1,101)
-a = a.reshape((10,10))
+np.fft.fft(f(x)).real.shape
 
-a
+s
 
-np.sum(a,axis=1)
+# # Fourierreihe in 2D
+# # A propos Markdown Cell
+# # Dies ist eine markdown cell
+# ## und das ist kleiner
+# ### noch kleiner
+# #### noch viel kleiner
+# ##### noch viel viel kleiner
+# Ab jetzt ohne hashtag
+#
+# **Fett**
+#
+# *italic*
+#
+# 1. a
+# 1. b
+#
+# * a
+# * b
+#
+# Dies ist eine inline Formel $e^{i\pi}+1=0$
+#
+# Und hier kommt eine agesetzte Formel
+#
+# \begin{equation}
+# i\hbar\frac{\partial\Psi}{\partial t}=\hat{H}\Psi
+# \end{equation}
 
-len(c)
+x = np.linspace(-1.,1.,201)
+y = np.linspace(-1.,1.,201)
+X,Y = np.meshgrid(x,y)
+A = np.exp(-(X**2+Y**2))
 
-plt.plot(c)
+# %matplotlib notebook
+#
+plt.imshow(A)
 
-f(x)-np.sum(y_cos,axis=0)
+# %matplotlib notebook
+FTA = np.fft.fft2(A)
+FTAinv = np.fft.ifft2(A)
+plt.imshow(FTAinv.real)
 
-f(x).shape
+
 
 
