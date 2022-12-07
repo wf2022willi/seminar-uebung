@@ -19,27 +19,51 @@ import matplotlib.pyplot as plt
 import scipy.integrate as integr
 
 
-# ### Hie definieren wir uns Sinus- und Kosinusfunktionen, 
-# ### die in das Intervall [-L,L] reinpassen
+# # Defintionen
+# Hier definieren wir uns Sinus- und Kosinusfunktionen, die in das Intervall $[-\frac{L}{2},\frac{L}{2}]$> reinpassen
 
 #Definition von Funktionen
 def cos(x,n=1,L=1):
-    return np.cos(n*np.pi/L*x)
-def sin(x,n,L):
-    return np.sin(n*np.pi/L*x)
+    return np.cos(n*2.*np.pi/L*x)
+def sin(x,n=1,L=1):
+    return np.sin(n*2*np.pi/L*x)
 
 
+# Dann stellen wir einige dieser Funktionen graphisch dar:
+
+# %matplotlib notebook
+fig = plt.figure()
+ax1 = fig.add_subplot(1,2,1, adjustable='box', aspect=0.5)
+ax2 = fig.add_subplot(1,2,2, adjustable='box', aspect=0.5)
+#fig, (ax1,ax2) = plt.subplots(1,2)
+x = np.linspace(-.5,.5,201)
+#
+ax1.set_title('Cosinus')
+ax2.set_title('Sinus')
+for n in np.arange(3):
+    ax1.plot(x, cos(x,n,1))
+    ax2.plot(x, sin(x,n,1))
+
+
+# # Testfunktionen
+# Wir definieren Testfunktionen, die wir in eine Fourierreihe zerlegen.
+
+# Mexican hat
 def f(x):
-    return x**2-x**4
+    return -4.*x**2+16.*x**4
+# Die Ableitung des Mexican hat
+def fp(x):
+    return 2.*x-4.*x**3
+# Das Integral des Mexican hat
 def F(x):
     return (x**3)/3. - (x**5)/5.
 
 
 # %matplotlib inline
-x = np.linspace(-1,1.,201)
+x = np.linspace(-.5,.5,201)
 fig, ax = plt.subplots() # let us plot the data
-ax.set_xlim([-1, 1])
-ax.set_ylim([0, .4])
+ax.set_xlim([-.51, .51])
+ax.set_ylim([-.26, .01])
 ax.plot(x,f(x))
 #ax.plot(x,y)
 
@@ -79,6 +103,7 @@ plt.plot(x,cos(x,n,L)*cos(x,m,L))
 
 L=1
 c = [np.trapz(cos(x,i,L)*f(x),dx=0.01) for i in np.arange(101)]
+
 s = [np.trapz(sin(x,i,L)*f(x),dx=0.01) for i in np.arange(11)]
 y_cos = np.array([c[i]*cos(x,i,L) for i in np.arange(101)])
 y_cos[0] = y_cos[0]/2
@@ -93,36 +118,8 @@ ax2.plot(x,np.sum(y_cos,axis=0))
 ax3.plot(c)
 
 
-np.fft.fft(f(x)).real.shape
-
-s
-
 # # Fourierreihe in 2D
-# # A propos Markdown Cell
-# # Dies ist eine markdown cell
-# ## und das ist kleiner
-# ### noch kleiner
-# #### noch viel kleiner
-# ##### noch viel viel kleiner
-# Ab jetzt ohne hashtag
 #
-# **Fett**
-#
-# *italic*
-#
-# 1. a
-# 1. b
-#
-# * a
-# * b
-#
-# Dies ist eine inline Formel $e^{i\pi}+1=0$
-#
-# Und hier kommt eine agesetzte Formel
-#
-# \begin{equation}
-# i\hbar\frac{\partial\Psi}{\partial t}=\hat{H}\Psi
-# \end{equation}
 
 x = np.linspace(-1.,1.,201)
 y = np.linspace(-1.,1.,201)
@@ -130,14 +127,33 @@ X,Y = np.meshgrid(x,y)
 A = np.exp(-(X**2+Y**2))
 
 # %matplotlib notebook
+fig, ax = plt.subplots()
 #
-plt.imshow(A)
+ax.imshow(A)
 
 # %matplotlib notebook
+fig, (ax1,ax2,ax3) = plt.subplots(1,3)
+#
 FTA = np.fft.fft2(A)
-FTAinv = np.fft.ifft2(A)
-plt.imshow(FTAinv.real)
+ax1.imshow(A.real)
+ax2.imshow(FTA.real)
+ax3.imshow(np.fft.ifft2(FTA).real)
 
+#a = np.mgrid[:5, :5][0]
+a = np.ones((7,7))
+a[2:5,2:5] = 0
+ffta = np.fft.fft2(a)
+fftashift = np.fft.fftshift(ffta)
+fftinva = np.fft.ifft2(ffta)
+fftashiftishift = np.fft.ifftshift(fftashift)
 
+# %matplotlib notebook
+#
+fig, (ax1,ax2,ax3,ax4,ax5) = plt.subplots(1,5)
+ax1.imshow(a)
+ax2.imshow(ffta.real)
+ax3.imshow(fftashift.real)
+ax4.imshow(fftashiftishift.real)
+ax5.imshow(np.fft.ifft2(fftashiftishift).real)
 
 
