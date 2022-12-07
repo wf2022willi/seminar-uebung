@@ -121,10 +121,10 @@ ax3.plot(c)
 # # Fourierreihe in 2D
 #
 
-x = np.linspace(-1.,1.,201)
-y = np.linspace(-1.,1.,201)
+x = np.linspace(-1.,1.,21)
+y = np.linspace(-1.,1.,21)
 X,Y = np.meshgrid(x,y)
-A = np.exp(-(X**2+Y**2))
+A = np.exp(-(X**2+Y**2))  # Gaussfunktion auf dem 2D Intervall 
 
 # %matplotlib notebook
 fig, ax = plt.subplots()
@@ -132,28 +132,35 @@ fig, ax = plt.subplots()
 ax.imshow(A)
 
 # %matplotlib notebook
-fig, (ax1,ax2,ax3) = plt.subplots(1,3)
+fig, (ax1,ax2,ax3,ax4) = plt.subplots(1,4)
 #
 FTA = np.fft.fft2(A)
 ax1.imshow(A.real)
 ax2.imshow(FTA.real)
-ax3.imshow(np.fft.ifft2(FTA).real)
+ax3.imshow(np.fft.fftshift(FTA).real)
+ax4.imshow(np.fft.ifft2(FTA).real)
 
 #a = np.mgrid[:5, :5][0]
-a = np.ones((7,7))
-a[2:5,2:5] = 0
-ffta = np.fft.fft2(a)
-fftashift = np.fft.fftshift(ffta)
+a = np.ones((7,7))                 # Originalbild
+a[2:5,2:5] = 0                     # Originalbild
+ffta = np.fft.fft2(a)              # Fouriertransformation von a
+fftashift = np.fft.fftshift(ffta)  # Shift der Achsen in die Mitte des Arrays
+#
+fftashift = np.sqrt(fftashift**2)
 fftinva = np.fft.ifft2(ffta)
 fftashiftishift = np.fft.ifftshift(fftashift)
 
 # %matplotlib notebook
 #
 fig, (ax1,ax2,ax3,ax4,ax5) = plt.subplots(1,5)
-ax1.imshow(a)
-ax2.imshow(ffta.real)
-ax3.imshow(fftashift.real)
-ax4.imshow(fftashiftishift.real)
+ax4.imshow(a)
+ax1.imshow(ffta.real)
+ax2.imshow(fftashift.real)
+ax3.imshow(fftashiftishift.real)
 ax5.imshow(np.fft.ifft2(fftashiftishift).real)
+
+fftashift.real
+
+fftashift[3,3]
 
 
