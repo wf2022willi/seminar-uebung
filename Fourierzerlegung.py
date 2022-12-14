@@ -17,6 +17,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.integrate as integr
+from matplotlib import cm
+from matplotlib.ticker import LinearLocator
+import cv2   # Open computer vision library
 
 
 # # Defintionen
@@ -124,43 +127,65 @@ ax3.plot(c)
 x = np.linspace(-1.,1.,21)
 y = np.linspace(-1.,1.,21)
 X,Y = np.meshgrid(x,y)
-A = np.exp(-(X**2+Y**2))  # Gaussfunktion auf dem 2D Intervall 
+#A = np.exp(-(X**2+Y**2))  # Gaussfunktion auf dem 2D Intervall 
+
+def f1(x,y):
+    return x*y
+def f2(x,y):
+    return x**2*y**2
+def f3(x,y):
+    return x**2*y+x*y**2
+def f4(x,y):
+    return np.exp(-(x**2+y**2))
+
 
 # %matplotlib notebook
 fig, ax = plt.subplots()
 #
+A = f1(X,Y)
 ax.imshow(A)
 
+# +
 # %matplotlib notebook
-fig, (ax1,ax2,ax3,ax4) = plt.subplots(1,4)
+fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+A = f1(X,Y)
+ax.plot_surface(X, Y, A, cmap=cm.coolwarm,
+                       linewidth=0, antialiased=False)
+
+
+# -
+
+# %matplotlib notebook
+fig, (ax1,ax2,ax3,ax4,ax5) = plt.subplots(1,5)
 #
+A = f1(X,Y)
 FTA = np.fft.fft2(A)
 ax1.imshow(A.real)
 ax2.imshow(FTA.real)
-ax3.imshow(np.fft.fftshift(FTA).real)
-ax4.imshow(np.fft.ifft2(FTA).real)
-
-#a = np.mgrid[:5, :5][0]
-a = np.ones((7,7))                 # Originalbild
-a[2:5,2:5] = 0                     # Originalbild
-ffta = np.fft.fft2(a)              # Fouriertransformation von a
-fftashift = np.fft.fftshift(ffta)  # Shift der Achsen in die Mitte des Arrays
-#
-fftashift = np.sqrt(fftashift**2)
-fftinva = np.fft.ifft2(ffta)
-fftashiftishift = np.fft.ifftshift(fftashift)
+FTAshift = np.fft.fftshift(FTA)
+ax3.imshow(FTAshift.real)
+FTAshift[7:14,7:14] = 0
+FTA = np.fft.fftshift(FTAshift)
+ax4.imshow(FTAshift.real)
+FTAinv = np.fft.ifft2(FTA)
+ax5.imshow(FTAinv.real)
 
 # %matplotlib notebook
-#
-fig, (ax1,ax2,ax3,ax4,ax5) = plt.subplots(1,5)
-ax4.imshow(a)
-ax1.imshow(ffta.real)
-ax2.imshow(fftashift.real)
-ax3.imshow(fftashiftishift.real)
-ax5.imshow(np.fft.ifft2(fftashiftishift).real)
+fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+#A = f1(X,Y)
+ax.plot_surface(X, Y, FTAinv.real, cmap=cm.coolwarm,
+                       linewidth=0, antialiased=False)
 
-fftashift.real
+img = cv2.imread('Picture.jpg',0) #Lade das Bild
+x = np.arange(img.shape[0])
+y = np.arange(img.shape[1])
+X,Y = np.meshgrid(x,y)
+Y
 
-fftashift[3,3]
+# %matplotlib notebook
+fig, ax = plt.subplots()
+ax.imshow(img)
+
+FTimg = np.fft.fft2(img)
 
 
